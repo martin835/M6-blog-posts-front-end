@@ -16,9 +16,10 @@ function App() {
 
   const loadBlogs = async () => {
     console.log("i am mounted");
+    const apiUrl = process.env.REACT_APP_BE_URL;
 
     try {
-      let response = await fetch("http://localhost:3001/blogPosts", {
+      let response = await fetch(`${apiUrl}/blogPosts`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
