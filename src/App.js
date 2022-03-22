@@ -5,14 +5,45 @@ import Home from "./views/home/Home";
 import Blog from "./views/blog/Blog";
 import NewBlogPost from "./views/new/New";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { useState, useEffect } from "react";
 
 function App() {
+  const [blogs, setBlogs] = useState([]);
+
+  useEffect(() => {
+    loadBlogs();
+  }, []);
+
+  const loadBlogs = async () => {
+    console.log("i am mounted");
+
+    try {
+      let response = await fetch("http://localhost:3001/blogPosts", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      if (response.ok) {
+        let data = await response.json();
+        console.log(data);
+
+        setBlogs(data);
+        //setIsLoading(false);
+      } else {
+        alert("something went wrong :(");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <Router>
       <NavBar />
       <Routes>
-        <Route path="/" exact element={<Home />} />
-        <Route path="/blog/:id" element={<Blog />} />
+        <Route path="/" exact element={<Home blogs={blogs} />} />
+        <Route path="/blog/:id" element={<Blog blogs={blogs} />} />
         <Route path="/new" element={<NewBlogPost />} />
       </Routes>
       <Footer />
